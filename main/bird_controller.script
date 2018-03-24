@@ -1,0 +1,39 @@
+--gravity pulling the player down in pixel units/sˆ2
+local gravity = -5
+
+-- take-off speed when jumping in pixel units/s
+local jump_takeoff_speed = 200
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	self.velocity = vmath.vector3(0, 0, 0)
+	self.position =go.get_position()
+end
+
+function final(self)
+	msg.post(".", "release_input_focus")
+end
+
+function update(self, dt)    
+	local gravity = vmath.vector3(0, gravity, 0)
+	self.velocity = self.velocity + gravity
+	go.set_position(go.get_position() + self.velocity * dt)
+end
+
+function jump(self)
+	self.velocity.y = jump_takeoff_speed;
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("jump")  then
+		if action.pressed then
+			print("jump")
+			jump(self)
+		end
+	end
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Remove this function if not needed
+end
