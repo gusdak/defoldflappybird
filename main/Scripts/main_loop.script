@@ -1,12 +1,20 @@
 -- main_loop
 local STATES = { pre_game = 0, game_running = 1, game_ended = 2 }
 local platforms_interval = 130
+local function reset_pipes(self)
 
+end
 local function reset(self)
 	self.speed = 250
 	self.state = STATES.pre_game
 	self.platforms_interval = 70
-	self.pipes = {};
+	
+	if self.pipes ~= nil then
+		for i,p in ipairs(self.pipes) do
+			go.delete(p)
+		end
+	end
+	self.pipes = {}
 end
 
 function init(self) 
@@ -49,5 +57,7 @@ function on_message(self, message_id, message, sender)
 		stop_pipes(self)
 	elseif message_id == hash("game_started") then
 		self.state = STATES.game_running
+	elseif message_id == hash("restart_game") then
+		reset(self)
 	end
 end
