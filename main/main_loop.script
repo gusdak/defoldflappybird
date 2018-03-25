@@ -11,16 +11,20 @@ function init(self)
 	end
 end
 
+local function move_pipes(self, pipe, dt)
+	local pos = go.get_position(pipe)
+	if pos.x <= -52 then 
+		pos.x = 288 + (pos.x + 52)
+		pos.y = math.random(-50, 50)
+	end
+	pos.x = pos.x - self.speed * dt 
+	go.set_position(pos, pipe) 
+end
+
 function update(self, dt)
 	if g_active then
 		for i, p in ipairs(pieces) do 
-			local pos = go.get_position(p)
-			if pos.x <= -52 then 
-				pos.x = 288 + (pos.x + 52)
-				pos.y = math.random(-50, 50)
-			end
-			pos.x = pos.x - self.speed * dt 
-			go.set_position(pos, p) 
+			move_pipes(self, p, dt)
 		end
 	end
 end
