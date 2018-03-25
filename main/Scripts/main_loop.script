@@ -13,6 +13,15 @@ function init(self)
 	reset(self)
 end
 
+local function delete_old_pipes(self)
+	for i,p in ipairs(self.pipes) do
+		local pos = go.get_position(p);
+		if pos.x < -100 then
+			table.remove(self.pipes, i)
+		end
+	end
+end
+
 function update(self, dt)
 	if self.state == STATES.game_running then
 		self.platforms_interval = self.platforms_interval - self.speed * dt;
@@ -20,9 +29,11 @@ function update(self, dt)
 			self.platforms_interval = platforms_interval;
 			local height = math.random(-50, 50);
 			local pipe = factory.create("pipes_spawner#factory", vmath.vector3(700, height, 0), nil, {}, 1)
-			msg.post(pipe, "set_speed", {speed = self.speed} )
 			table.insert(self.pipes, pipe);
+			msg.post(pipe, "set_speed", { speed = self.speed } )
 		end
+		
+		delete_old_pipes(self)
 	end
 end
 
@@ -38,5 +49,5 @@ function on_message(self, message_id, message, sender)
 		stop_pipes(self)
 	elseif message_id == hash("game_started") then
 		self.state = STATES.game_running
-	end	
+	end
 end

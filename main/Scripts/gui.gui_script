@@ -1,0 +1,6 @@
+function on_message(self, message_id, message, sender)
+	if message_id == hash("update_score") then
+		local node = gui.get_node("score")
+		gui.set_text(node, message.score)
+	end
+end

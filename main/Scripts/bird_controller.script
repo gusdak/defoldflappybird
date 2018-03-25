@@ -11,6 +11,7 @@ function init(self)
 	msg.post(".", "acquire_input_focus")
 	self.velocity = vmath.vector3(0, 0, 0)
 	self.position = go.get_position()
+	self.score = 0;
 
 	reset(self)
 end
@@ -48,8 +49,11 @@ local function die()
 end
 
 function on_message(self, message_id, message, sender)
-	if message_id == hash("trigger_response") then 
-		if message.enter then 
+	if message_id == hash("trigger_response") and message.enter then 
+		if message.group == hash("score") then
+			self.score = self.score + 1
+			msg.post("/background#Score", "update_score", { score = self.score})
+		else
 			die()
 		end
 	end
