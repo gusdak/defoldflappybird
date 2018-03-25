@@ -1,6 +1,6 @@
 components {
   id: "pipe"
-  component: "/main/pipe.script"
+  component: "/main/Scripts/pipe.script"
   position {
     x: 0.0
     y: 0.0
