@@ -42,7 +42,8 @@ local function die()
 	msg.post(".", "release_input_focus")
 	pos = go.get_position(".")
 	pos.y = 0;
-	go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, pos, go.EASING_LINEAR, 0.5, 0, nil) 
+	go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, pos, go.EASING_LINEAR, 0.5, 0, nil)
+	
 	msg.post("/controller", "bird_died")
 end
 

@@ -1,0 +1,25 @@
+
+function init(self)
+	self.active = true;
+end
+
+function update(self, dt)
+	if self.active == true then
+		local pos = go.get_position(".")
+		pos.x = pos.x - self.speed * dt;
+		go.set_position(pos);
+
+		if pos.x < -100 then
+			go.delete(".", true)
+		end
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("stop") then
+		self.active = false
+	end
+	if message_id == hash("set_speed") then
+		self.speed = message.speed
+	end
+end
