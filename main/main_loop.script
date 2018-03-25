@@ -1,9 +1,15 @@
 -- main_loop
 local pieces = { "pipes_one", "pipes_two" }
-g_active = false;
+local STATES = { pre_game = 0, game_running = 1, game_ended = 2 }
+
+local function reset(self)
+	self.speed = 250
+	self.state = STATES.pre_game;
+end
 
 function init(self) 
-	self.speed = 250  -- Speed in pixels/s
+	reset(self)
+	
 	for i, p in ipairs(pieces) do 
 		local pos = go.get_position(p)
 		pos.y = math.random(-50, 50)
@@ -22,9 +28,17 @@ local function move_pipes(self, pipe, dt)
 end
 
 function update(self, dt)
-	if g_active then
+	if self.state == STATES.game_running then
 		for i, p in ipairs(pieces) do 
 			move_pipes(self, p, dt)
 		end
 	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("bird_died") then 
+		self.state = STATES.game_ended
+	elseif message_id == hash("game_started") then
+		self.state = STATES.game_running
+	end	
 end
