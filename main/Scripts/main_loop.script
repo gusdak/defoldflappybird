@@ -1,20 +1,24 @@
 -- main_loop
 local STATES = { pre_game = 0, game_running = 1, game_ended = 2 }
-local platforms_interval = 130
-local function reset_pipes(self)
 
-end
-local function reset(self)
-	self.speed = 250
-	self.state = STATES.pre_game
-	self.platforms_interval = 70
-	
+go.property("pipes_interval", 130)
+go.property("spawn_distance", 700)
+go.property("top_pipe_coord", 50)
+go.property("bot_pipe_coord", -50)
+
+local function reset_pipes(self)
 	if self.pipes ~= nil then
 		for i,p in ipairs(self.pipes) do
 			go.delete(p)
 		end
 	end
 	self.pipes = {}
+end
+local function reset(self)
+	self.speed = 250
+	self.state = STATES.pre_game
+	self.till_next_pipe = self.pipes_interval
+	reset_pipes(self)
 end
 
 function init(self) 
@@ -30,15 +34,20 @@ local function delete_old_pipes(self)
 	end
 end
 
+local function spawn_pipe(self)
+	local height = math.random(self.bot_pipe_coord, self.top_pipe_coord);
+	local spawn_pos = vmath.vector3(self.spawn_distance, height, 0)
+	local pipe = factory.create("pipes_spawner#factory", spawn_pos, nil, {}, 1)
+	table.insert(self.pipes, pipe);
+	msg.post(pipe, "set_speed", { speed = self.speed } )
+end
+
 function update(self, dt)
 	if self.state == STATES.game_running then
-		self.platforms_interval = self.platforms_interval - self.speed * dt;
-		if self.platforms_interval <= 0 then
-			self.platforms_interval = platforms_interval;
-			local height = math.random(-50, 50);
-			local pipe = factory.create("pipes_spawner#factory", vmath.vector3(700, height, 0), nil, {}, 1)
-			table.insert(self.pipes, pipe);
-			msg.post(pipe, "set_speed", { speed = self.speed } )
+		self.till_next_pipe = self.till_next_pipe - self.speed * dt;
+		if self.till_next_pipe <= 0 then
+			self.till_next_pipe = self.pipes_interval;
+			spawn_pipe(self)
 		end
 		
 		delete_old_pipes(self)
