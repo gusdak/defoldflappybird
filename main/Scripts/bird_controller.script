@@ -9,7 +9,7 @@ local function reset(self)
 	self.velocity = vmath.vector3(0, 0, 0)
 	go.set_position(start_position)
 	self.score = 0
-	msg.post("/background#Score", "update_score", { score = self.score})
+	msg.post("/background#Score", "reset")
 end
 
 function init(self)
@@ -21,6 +21,7 @@ end
 local function die(self)
 	self.state = STATE.dead
 	msg.post("/controller", "bird_died")
+	msg.post("/background#Score", "view_score", {score = self.score})
 end
 
 function update(self, dt)

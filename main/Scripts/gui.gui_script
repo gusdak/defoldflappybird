@@ -2,5 +2,17 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("update_score") then
 		local node = gui.get_node("score")
 		gui.set_text(node, message.score)
+	elseif message_id == hash("view_score") then
+		local result_node = gui.get_node("result")
+		gui.set_text(result_node,"Score: " .. tostring(message.score))
+		gui.set_enabled(result_node, true)
+		local score_node = gui.get_node("score")
+		gui.set_enabled(score_node, false)
+	elseif message_id == hash("reset") then
+		local result_node = gui.get_node("result")
+		gui.set_enabled(result_node, false)
+		local score_node = gui.get_node("score")
+		gui.set_text(score_node, "0")
+		gui.set_enabled(score_node, true)
 	end
 end

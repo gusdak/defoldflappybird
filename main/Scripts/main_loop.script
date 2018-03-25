@@ -14,6 +14,7 @@ local function reset_pipes(self)
 	end
 	self.pipes = {}
 end
+
 local function reset(self)
 	self.speed = 250
 	self.state = STATES.pre_game
