@@ -5,6 +5,7 @@ go.property("pipes_interval", 130)
 go.property("spawn_distance", 700)
 go.property("top_pipe_coord", 50)
 go.property("bot_pipe_coord", -50)
+go.property("init_speed", 250)
 
 local function reset_pipes(self)
 	if self.pipes ~= nil then
@@ -16,7 +17,7 @@ local function reset_pipes(self)
 end
 
 local function reset(self)
-	self.speed = 250
+	self.speed = self.init_speed
 	self.state = STATES.pre_game
 	self.till_next_pipe = self.pipes_interval
 	reset_pipes(self)
@@ -30,6 +31,7 @@ local function delete_old_pipes(self)
 	for i,p in ipairs(self.pipes) do
 		local pos = go.get_position(p);
 		if pos.x < -100 then
+			go.delete(p)
 			table.remove(self.pipes, i)
 		end
 	end
